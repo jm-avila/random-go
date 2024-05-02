@@ -11,6 +11,18 @@ var ENV_VAR_NAME_LIST = []string{"REACT_APP_API_HOST"}
 var HTML_ELEMENT_ID = "injected-env-vars"
 var FILE_PATH = "./index.html"
 
+func main() {
+	envDictionary := getEnvVarDictionary(ENV_VAR_NAME_LIST)
+	metaTag := generateMetaTagWithDictionary(HTML_ELEMENT_ID, envDictionary)
+	fileContent, err := readFile(FILE_PATH)
+	if err != nil {
+		fmt.Println("Failed to read file:", err)
+		return
+	}
+	updatedContent := addTagToFileContent(fileContent, metaTag)
+	writeFile(FILE_PATH, updatedContent)
+}
+
 func getEnvVarDictionary(envVarNames []string) map[string]string {
 	result := make(map[string]string)
 	for _, name := range envVarNames {
@@ -61,16 +73,4 @@ func writeFile(path string, fileContent string) {
 	fmt.Println("File written successfully")
 }
 
-
-func main() {
-	envDictionary := getEnvVarDictionary(ENV_VAR_NAME_LIST)
-	metaTag := generateMetaTagWithDictionary(HTML_ELEMENT_ID, envDictionary)
-	fileContent, err := readFile(FILE_PATH)
-	if err != nil {
-		fmt.Println("Failed to read file:", err)
-		return
-	}
-	updatedContent := addTagToFileContent(fileContent, metaTag)
-	writeFile(FILE_PATH, updatedContent)
-}
 
