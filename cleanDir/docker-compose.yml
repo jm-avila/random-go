@@ -1,0 +1,12 @@
+services:
+  script_builder:
+    container_name: go_script_builder
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./:/go/src
+
+volumes:
+  script_builder:
+    driver: local
