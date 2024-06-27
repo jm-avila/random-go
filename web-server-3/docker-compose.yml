@@ -1,0 +1,13 @@
+services:
+  go-server:
+    build: .
+    ports:
+      - ${DOCKER_PORT}:${SERVER_PORT}
+    env_file:
+      - .env
+    networks:
+      - go-server
+
+networks:
+  go-server:
+    driver: bridge

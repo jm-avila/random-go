@@ -1,5 +1,6 @@
 services:
   go-db:
+    container_name: go-db
     image: mongo
     environment:
       - PUID=1000
@@ -12,6 +13,12 @@ services:
       driver: none
     env_file:
       - .env
+    networks:
+      - go-server
+
+networks:
+  go-server:
+    driver: bridge
 
 volumes:
   mongodb-data:

@@ -19,8 +19,14 @@ type UserController struct {
 	session *mongo.Client
 }
 
-func NewUserController(session *mongo.Client) *UserController {
-	return &UserController{session}
+func RegisterUserRoutes(session *mongo.Client, router *httprouter.Router) {
+	userControllers := &UserController{session}
+	router.GET("/ping", userControllers.GetPing)
+	router.GET("/user/:id", userControllers.GetUser)
+	router.POST("/user", userControllers.CreateUser)
+	router.PUT("/user/:id", userControllers.UpdateUser)
+	router.DELETE("/user/:id", userControllers.DeleteUser)
+	fmt.Println("Registered User Routes")
 }
 
 func isValidObjectID(id string) (primitive.ObjectID, bool) {

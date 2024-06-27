@@ -5,44 +5,44 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/jmavila/web-server-3/controllers"
+	"github.com/joho/godotenv"
 	"github.com/julienschmidt/httprouter"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 func main() {
-	fmt.Println("Starting server")
+	loadEnvVars()
 	client := connectToDB()
 	defer closeDBConnection(client)
 
 	router := httprouter.New()
-	fmt.Println("1")
+	controllers.RegisterUserRoutes(client, router)
 
-	userControllers := controllers.NewUserController(client)
-	fmt.Println("2")
-	router.GET("/ping", userControllers.GetPing)
-	router.GET("/user/:id", userControllers.GetUser)
-	router.POST("/user", userControllers.CreateUser)
-	router.PUT("/user/:id", userControllers.UpdateUser)
-	router.DELETE("/user/:id", userControllers.DeleteUser)
-	fmt.Printf("Starting server at port 8000\n")
-	err := http.ListenAndServe("localhost:8000", router)
+	addr := os.Getenv("ADDRESS")
+	fmt.Printf("Listening at %s\n", addr)
+	err := http.ListenAndServe(addr, router)
 	if err != nil {
 		log.Fatal(err)
 		return
 	}
+}
 
-	fmt.Println("4")
-	fmt.Println("Listening at localhost:8000")
+func loadEnvVars() {
+	envVarErr := godotenv.Load()
+	if envVarErr != nil {
+		log.Fatal("Error loading .env file")
+	}
+	fmt.Println("Loaded Environment Variables!")
 }
 
 func connectToDB() *mongo.Client {
-	// Define MongoDB connection string.
-	clientOptions := options.Client().ApplyURI("mongodb://admin:123123@localhost:27017/")
+	mongoUrl := os.Getenv("MONGO_URL")
+	clientOptions := options.Client().ApplyURI(mongoUrl)
 
-	// Connect to MongoDB.
 	client, err := mongo.Connect(context.Background(), clientOptions)
 	if err != nil {
 		log.Fatal(err)
