@@ -1,0 +1,4 @@
+# Environment
+.env
+# Docker artifact files
+mysql-data

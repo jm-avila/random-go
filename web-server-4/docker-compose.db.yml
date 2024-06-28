@@ -1,0 +1,13 @@
+services:
+  mysql-db:
+    image: mysql
+    volumes:
+      - ./mysql-data:/var/lib/mysql
+    ports:
+      - 3306:3306
+    env_file:
+      - .env
+
+volumes:
+  mysql-db:
+    driver: local
