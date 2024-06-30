@@ -16,7 +16,7 @@ func NewStore(db *sql.DB) *Store {
 }
 
 func (s *Store) GetUserByEmail(email string) (*models.User, error) {
-	rows, err := s.db.Query("SELECT I FROM users WHERE email = ?", email)
+	rows, err := s.db.Query("SELECT * FROM users WHERE email = ?", email)
 	if err != nil {
 		return nil, err
 	}
@@ -34,7 +34,7 @@ func (s *Store) GetUserByEmail(email string) (*models.User, error) {
 }
 
 func (s *Store) GetUserById(id int) (*models.User, error) {
-	rows, err := s.db.Query("SELECT I FROM users WHERE id = ?", id)
+	rows, err := s.db.Query("SELECT * FROM users WHERE id = ?", id)
 	if err != nil {
 		return nil, err
 	}
@@ -52,6 +52,10 @@ func (s *Store) GetUserById(id int) (*models.User, error) {
 }
 
 func (s *Store) CreateUser(user models.User) error {
+	_, err := s.db.Exec("INSERT INTO users (first_name, last_name, email, password) VALUES (?,?,?,?)", user.FirstName, user.LastName, user.Email, user.Password)
+	if err != nil {
+		return err
+	}
 	return nil
 }
 
@@ -68,5 +72,5 @@ func scanRowIntoUser(rows *sql.Rows) (*models.User, error) {
 	if err != nil {
 		return nil, err
 	}
-	return nil, err
+	return user, nil
 }

@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
+	"github.com/jmavila/golang/web-server-4/service/status"
 	"github.com/jmavila/golang/web-server-4/service/user"
 )
 
@@ -26,8 +27,9 @@ func (s *APIServer) Run() error {
 	subrouter := router.PathPrefix("/api/v1").Subrouter()
 	userStore := user.NewStore(s.db)
 	userHandler := user.NewHandler(userStore)
+	statusHandler := status.NewHandler()
 	userHandler.RegisterRoutes(subrouter)
-
+	statusHandler.RegisterRoutes(subrouter)
 	log.Println("Listening on", s.addr)
 	return http.ListenAndServe(s.addr, router)
 }

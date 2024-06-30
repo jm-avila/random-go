@@ -1,8 +1,10 @@
 package utils
 
 import (
+	"database/sql"
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 
 	"github.com/go-playground/validator/v10"
@@ -26,4 +28,12 @@ func WriteJSON(w http.ResponseWriter, status int, v any) error {
 
 func WriteError(w http.ResponseWriter, status int, e error) {
 	WriteJSON(w, status, map[string]string{"error": e.Error()})
+}
+
+func InitStorage(db *sql.DB) {
+	err := db.Ping()
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println("DB: Successfully connected!")
 }
