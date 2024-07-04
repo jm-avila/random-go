@@ -29,29 +29,54 @@ type User struct {
 	CreatedAt time.Time `json:"created_at"`
 }
 
-type Products struct {
+// PRODUCTS
+
+type ProductStore interface {
+	GetProductsByID(ids []int) ([]Product, error)
+	GetProducts() ([]Product, error)
+	UpdateProduct(*Product) error
+}
+
+type Product struct {
 	ID          int       `json:"id"`
 	Name        string    `json:"name"`
 	Description string    `json:"description"`
 	Image       string    `json:"image"`
 	Quantity    int       `json:"quantity"`
+	Price       float64   `json:"price"`
 	CreatedAt   time.Time `json:"created_at"`
 }
 
-type Orders struct {
+// ORDER
+
+type OrderStore interface {
+	CreateOrder(Order) (int, error)
+	CreateOrderItem(OrderItem) error
+}
+
+type CheckoutItem struct {
+	ProductId int `json:"product_id"`
+	Quantity  int `json:"quantity"`
+}
+
+type CheckoutPayload struct {
+	Items []CheckoutItem `json:"items" validate:"required"`
+}
+
+type Order struct {
 	ID        int       `json:"id"`
 	UserId    int       `json:"user_id"`
-	Total     int       `json:"total"`
+	Total     float64   `json:"total"`
 	Status    string    `json:"status"`
 	Address   string    `json:"address"`
 	CreatedAt time.Time `json:"created_at"`
 }
 
-type OrdersItems struct {
+type OrderItem struct {
 	ID        int       `json:"id"`
 	OrderId   string    `json:"order_id"`
-	ProductId string    `json:"product_id"`
+	ProductId int       `json:"product_id"`
 	Quantity  int       `json:"quantity"`
-	Price     int       `json:"price"`
+	Price     float64   `json:"price"`
 	CreatedAt time.Time `json:"created_at"`
 }
